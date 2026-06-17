@@ -1,0 +1,18 @@
+{
+  "command": "python3 -m venv backend/venv && backend/venv/bin/pip install fastapi 'uvicorn[standard]' starlette_cors",
+  "exit_code": 1,
+  "stdout": "Collecting fastapi\n  Using cached fastapi-0.137.1-py3-none-any.whl.metadata (26 kB)\n",
+  "stderr": "ERROR: Could not find a version that satisfies the requirement starlette_cors (from versions: none)\nERROR: No matching distribution found for starlette_cors\n",
+  "duration": 3.811,
+  "traceback_analysis": {
+    "error_type": "UnknownError",
+    "error_message": "An unknown error occurred during execution.",
+    "file_path": null,
+    "line_number": null,
+    "failing_code": null,
+    "root_cause": "runtime_crash",
+    "suggested_fix": "Analyze the traceback and implement a fix to address the crash.",
+    "is_syntax_error": false
+  },
+  "is_stable": false
+}

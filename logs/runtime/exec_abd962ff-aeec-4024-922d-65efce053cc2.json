@@ -1,0 +1,9 @@
+{
+  "command": "cd todo-app && npm create vite@latest frontend --yes -- --template react",
+  "exit_code": 0,
+  "stdout": "\u001b[?25l\u2502\n\u25c6  Install with npm and start now?\n\u2502  \u25cf Yes / \u25cb No\n\u2514\n",
+  "stderr": "",
+  "duration": 120.116,
+  "traceback_analysis": null,
+  "is_stable": true
+}

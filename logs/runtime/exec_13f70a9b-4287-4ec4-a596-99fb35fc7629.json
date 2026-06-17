@@ -1,0 +1,9 @@
+{
+  "command": "touch todo_api/app/__init__.py todo_api/app/models/__init__.py todo_api/app/routes/__init__.py",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.135,
+  "traceback_analysis": null,
+  "is_stable": true
+}

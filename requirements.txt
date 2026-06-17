@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+pydantic
+python-dotenv
+httpx
+aiofiles
+docker
+google-genai
+openai
+jinja2
+python-multipart
+websockets
+pytest
+pytest-asyncio

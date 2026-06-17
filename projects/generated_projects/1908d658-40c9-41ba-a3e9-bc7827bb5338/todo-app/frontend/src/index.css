@@ -1,0 +1,37 @@
+/* Import TailwindCSS base styles, components, and utilities */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply basic global styles for a cleaner user interface */
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Tailwind equivalent for a default sans-serif font */
+  @apply font-sans;
+  /* Default light mode background and text color */
+  @apply bg-gray-50 text-gray-800;
+  /* Dark mode background and text color */
+  @apply dark:bg-gray-900 dark:text-gray-100;
+  /* Smooth transitions for theme changes */
+  @apply transition-colors duration-200 ease-in-out;
+}
+
+/* Basic reset for focus outlines to improve accessibility without being obtrusive */
+*:focus {
+  outline: 2px solid theme('colors.indigo.500');
+  outline-offset: 2px;
+}
+
+/* Override default for `a` tags for consistency with Tailwind's resets */
+a {
+  color: inherit;
+  text-decoration: inherit;
+}

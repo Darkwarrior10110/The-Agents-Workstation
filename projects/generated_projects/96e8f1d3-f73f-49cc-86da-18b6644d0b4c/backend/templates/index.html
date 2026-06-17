@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        /* General Body Styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Share Tech Mono', monospace; /* Futuristic monospaced font */
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2a 50%, #0a0a0a 100%); /* Dark, moody gradient */
+            color: #00ffc0; /* Neon green-blue */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Glitch effect background (subtle) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%2300ffc0' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 0h3v3H0V0zm3 3h3v3H3V3z'/%3E%3C/g%3E%3C/svg%3E"); /* Subtle pixel/grid pattern */
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: -1;
+            animation: background-pan 60s linear infinite; /* Slow background movement */
+        }
+
+        @keyframes background-pan {
+            from {
+                background-position: 0% 0%;
+            }
+            to {
+                background-position: 100% 100%;
+            }
+        }
+
+        /* Container for the login form */
+        .login-container {
+            background-color: rgba(0, 0, 0, 0.8); /* Semi-transparent dark background */
+            border: 2px solid #00ffc0; /* Neon border */
+            box-shadow: 0 0 30px #00ffc0, 0 0 60px #8a2be2; /* Dual neon glow */
+            padding: 40px;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-sizing: border-box;
+            position: relative;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Title styling */
+        .login-container h1 {
+            font-family: 'Orbitron', sans-serif; /* Aggressive, futuristic font */
+            color: #ff00ff; /* Magenta neon */
+            text-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #00ffff; /* Triple neon glow */
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        .login-container h1::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #ff00ff;
+            box-shadow: 0 0 8px #ff00ff, 0 0 16px #00ffff;
+            border-radius: 2px;
+        }
+
+        /* Form group for labels and inputs */
+        .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #00ffff; /* Cyan neon */
+            font-size: 1.1em;
+            text-shadow: 0 0 5px #00ffff;
+            letter-spacing: 1px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid #00ffff; /* Cyan border */
+            border-radius: 5px;
+            color: #00ffc0; /* Neon green-blue text */
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            box-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box; /* Important for padding/width calculation */
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: #ff00ff; /* Magenta on focus */
+            box-shadow: 0 0 15px rgba(255, 0, 255, 0.6), 0 0 10px rgba(0, 255, 255, 0.4);
+            outline: none;
+        }
+
+        /* Placeholder text style */
+        .form-group input::placeholder {
+            color: rgba(0, 255, 192, 0.5); /* Faded neon placeholder */
+        }
+
+        /* Submit Button */
+        .submit-button {
+            width: 100%;
+            padding: 15px;
+            background-color: #00ffc0; /* Neon green-blue button */
+            color: #1a0a2a; /* Dark text for contrast */
+            border: none;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2em;
+            font-weight: 700;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 0 15px #00ffc0, 0 0 30px #00ffff;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+            text-transform: uppercase;
+        }
+
+        .submit-button:hover {
+            background-color: #00ffff; /* Cyan on hover */
+            box-shadow: 0 0 20px #00ffff, 0 0 40px #ff00ff;
+            transform: translateY(-2px);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+            box-shadow: 0 0 10px #00ffff, 0 0 20px #ff00ff;
+        }
+
+        /* Message area for Jinja2 feedback */
+        .message {
+            color: #ff00ff; /* Magenta for error/success messages */
+            font-size: 0.9em;
+            margin-top: 20px;
+            text-shadow: 0 0 5px #ff00ff;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 30px;
+                margin: 20px;
+            }
+
+            .login-container h1 {
+                font-size: 2em;
+            }
+
+            .form-group label {
+                font-size: 1em;
+            }
+
+            .form-group input[type="text"],
+            .form-group input[type="password"] {
+                padding: 10px 12px;
+            }
+
+            .submit-button {
+                padding: 12px;
+                font-size: 1.1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>LOGIN // SYSTEM</h1>
+        {% if error_message %}
+            <p class="message">{{ error_message }}</p>
+        {% endif %}
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label for="username">USERNAME:</label>
+                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">PASSWORD:</label>
+                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <button type="submit" class="submit-button">ACCESS // SYSTEM</button>
+        </form>
+    </div>
+    <script>
+        // No custom JavaScript functionality is required by the task.
+        // The form submission is handled by standard HTML POST request.
+    </script>
+</body>
+</html>

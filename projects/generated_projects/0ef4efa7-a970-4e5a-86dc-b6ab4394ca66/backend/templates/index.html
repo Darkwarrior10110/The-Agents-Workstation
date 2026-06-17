@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEO-KYO Login // Access Grid</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-glitch-effect"></div>
+        <h1 class="login-title">NEO-KYO LOGIN</h1>
+        <p class="login-subtitle">_ACCESS GRID_</p>
+
+        {% if error_message %}
+            <div class="error-message">{{ error_message }}</div>
+        {% endif %}
+
+        <form action="/login" method="POST" id="loginForm">
+            <div class="input-group">
+                <label for="username" class="input-label">USERNAME:</label>
+                <input type="text" id="username" name="username" required autocomplete="username">
+                <span class="input-focus-border"></span>
+            </div>
+            <div class="input-group">
+                <label for="password" class="input-label">PASSWORD:</label>
+                <input type="password" id="password" name="password" required autocomplete="current-password">
+                <span class="input-focus-border"></span>
+            </div>
+            <button type="submit" class="login-button">LOGIN <span class="button-glitch"></span></button>
+        </form>
+
+        <div class="login-links">
+            <a href="#" class="neon-link">FORGOT PASSWORD?</a>
+            <span class="link-separator">//</span>
+            <a href="#" class="neon-link">CREATE ACCOUNT</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', path='/js/script.js') }}"></script>
+</body>
+</html>

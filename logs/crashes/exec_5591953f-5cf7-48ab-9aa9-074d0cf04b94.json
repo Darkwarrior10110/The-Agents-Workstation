@@ -1,0 +1,18 @@
+{
+  "command": "todo_app/venv/bin/python3 -m uvicorn todo_app.main:app --port 8001",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "ERROR:    Error loading ASGI app. Could not import module \"todo_app.main\".\n",
+  "duration": 1.009,
+  "traceback_analysis": {
+    "error_type": "UnknownError",
+    "error_message": "An unknown error occurred during execution.",
+    "file_path": null,
+    "line_number": null,
+    "failing_code": null,
+    "root_cause": "runtime_crash",
+    "suggested_fix": "Analyze the traceback and implement a fix to address the crash.",
+    "is_syntax_error": false
+  },
+  "is_stable": false
+}

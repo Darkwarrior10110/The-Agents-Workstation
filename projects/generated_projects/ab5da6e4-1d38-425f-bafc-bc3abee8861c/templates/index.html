@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyberpunk Login // System Access</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #1a0a20; /* Deep dark purple/black */
+            --neon-blue: #00eaff;
+            --neon-magenta: #ee00ff;
+            --neon-green: #00ff99;
+            --text-color: #e0e0e0;
+            --border-glow: 0 0 8px var(--neon-blue), 0 0 16px var(--neon-magenta);
+            --text-glow-blue: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-blue);
+            --text-glow-magenta: 0 0 5px var(--neon-magenta), 0 0 10px var(--neon-magenta);
+            --text-glow-green: 0 0 5px var(--neon-green), 0 0 10px var(--neon-green);
+            --error-red: #ff3366;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Share Tech Mono', monospace;
+            background: linear-gradient(45deg, #0f001f, #05000f); /* Dark gradient background */
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden; /* Hide potential overflow from glitch effects */
+            position: relative;
+        }
+
+        /* Glitch effect on body background (optional, for more immersion) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 234, 255, 0.05) 0px,
+                rgba(0, 234, 255, 0.05) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            animation: background-scan 10s linear infinite;
+            pointer-events: none;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        @keyframes background-scan {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        .login-container {
+            background-color: var(--dark-bg);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: var(--border-glow);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            z-index: 1; /* Ensure container is above background effects */
+            border: 1px solid var(--neon-blue); /* Subtle border */
+            animation: container-pulse 5s infinite alternate; /* Pulsing effect for the container */
+        }
+
+        @keyframes container-pulse {
+            0% { transform: scale(1); box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-magenta); }
+            100% { transform: scale(1.01); box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-magenta); }
+        }
+
+        .login-glitch-effect {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.05; /* Subtle glitch background */
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(238, 0, 255, 0.1) 0px,
+                rgba(238, 0, 255, 0.1) 1px,
+                transparent 1px,
+                transparent 5px
+            ), repeating-linear-gradient(
+                135deg,
+                rgba(0, 234, 255, 0.1) 0px,
+                rgba(0, 234, 255, 0.1) 1px,
+                transparent 1px,
+                transparent 5px
+            );
+            animation: glitch-bg 10s infinite linear;
+            z-index: -1; /* Behind content */
+        }
+
+        @keyframes glitch-bg {
+            0% { background-position: 0 0; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .main-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            font-size: 2.5em;
+            text-shadow: var(--text-glow-blue);
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+            animation: text-flicker 3s infinite alternate;
+        }
+
+        .sub-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-magenta);
+            font-size: 1.2em;
+            text-shadow: var(--text-glow-magenta);
+            margin-top: 0;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            animation: text-flicker 4s infinite reverse;
+        }
+
+        @keyframes text-flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: var(--text-glow-blue); /* Primary glow */
+                opacity: 1;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+                opacity: 0.8;
+            }
+            22% {
+                text-shadow: var(--text-glow-magenta); /* Brief flicker to another color */
+                opacity: 0.9;
+            }
+        }
+
+        .error-message {
+            color: var(--error-red); /* Red for errors */
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            text-shadow: 0 0 5px var(--error-red), 0 0 10px var(--error-red);
+            animation: error-glow 1.5s infinite alternate;
+            padding: 5px;
+            border-radius: 3px;
+            border: 1px solid var(--error-red);
+            background-color: rgba(255, 51, 102, 0.1);
+        }
+
+        @keyframes error-glow {
+            0% { text-shadow: 0 0 5px var(--error-red); opacity: 1; }
+            100% { text-shadow: 0 0 10px var(--error-red), 0 0 20px var(--error-red); opacity: 0.8; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--neon-green);
+            text-shadow: var(--text-glow-green);
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px); /* Account for padding */
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 234, 255, 0.3);
+            border-radius: 5px;
+            color: var(--text-color);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--neon-blue);
+            box-shadow: var(--border-glow);
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-magenta));
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-magenta);
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-button:hover {
+            background: linear-gradient(45deg, var(--neon-magenta), var(--neon-blue));
+            box-shadow: 0 0 15px var(--neon-magenta), 0 0 25px var(--neon-blue);
+            transform: translateY(-2px);
+        }
+
+        .login-button:active {
+            transform: translateY(0);
+            box-shadow: 0 0 5px var(--neon-blue), 0 0 10px var(--neon-magenta);
+        }
+
+        /* Glitch effect for button on hover/active */
+        .login-button::before {
+            content: '>> ACCESSING <<';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-magenta));
+            color: #fff;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-shadow: var(--text-glow-blue);
+            animation: none;
+        }
+
+        .login-button:hover::before {
+            opacity: 1;
+            animation: button-glitch 0.5s linear infinite alternate;
+        }
+
+        @keyframes button-glitch {
+            0% {
+                text-shadow: var(--text-glow-blue);
+                transform: translate(0);
+            }
+            33% {
+                text-shadow: var(--text-glow-magenta);
+                transform: translate(-2px, 2px);
+            }
+            66% {
+                text-shadow: var(--text-glow-green);
+                transform: translate(2px, -2px);
+            }
+            100% {
+                text-shadow: var(--text-glow-blue);
+                transform: translate(0);
+            }
+        }
+
+        .login-button.button-submitting {
+            background: #555; /* Dimmed */
+            cursor: wait;
+            pointer-events: none; /* Prevent double clicks */
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+        }
+        .login-button.button-submitting::before {
+            content: '>>> CONNECTING <<<';
+            opacity: 1;
+            animation: none; /* Disable hover glitch */
+            background: linear-gradient(45deg, #70aeff, #ff70ee); /* Submitting glow */
+            text-shadow: 0 0 5px #fff;
+        }
+
+        .links {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85em;
+        }
+
+        .links a {
+            color: var(--neon-green);
+            text-decoration: none;
+            text-shadow: var(--text-glow-green);
+            transition: color 0.3s ease, text-shadow 0.3s ease;
+        }
+
+        .links a:hover {
+            color: #fff;
+            text-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green), 0 0 30px var(--neon-green);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 500px) {
+            .login-container {
+                padding: 25px;
+                width: 85%;
+            }
+
+            .main-title {
+                font-size: 2em;
+            }
+
+            .sub-title {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
+            .links {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-glitch-effect"></div>
+        <h1 class="main-title">NEO-LOGIN</h1>
+        <h2 class="sub-title">SYSTEM ACCESS REQUIRED</h2>
+
+        {% if error_message %}
+        <div class="error-message" id="backend-error">{{ error_message }}</div>
+        {% endif %}
+
+        <div class="error-message" id="client-error" style="display: none;"></div>
+
+        <form action="/login" method="POST" id="loginForm">
+            <div class="form-group">
+                <label for="username">USERNAME:</label>
+                <input type="text" id="username" name="username" placeholder="enter your handle" required autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="password">PASSWORD:</label>
+                <input type="password" id="password" name="password" placeholder="secure access code" required autocomplete="off">
+            </div>
+            <button type="submit" class="login-button">ACCESS SYSTEM</button>
+        </form>
+
+        <div class="links">
+            <a href="#" class="neon-green-glow">FORGOT PASSWORD?</a>
+            <a href="#" class="neon-green-glow">CREATE ACCOUNT</a>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginForm = document.getElementById('loginForm');
+            const usernameInput = document.getElementById('username');
+            const passwordInput = document.getElementById('password');
+            const clientErrorMessageDiv = document.getElementById('client-error');
+            const backendErrorMessageDiv = document.getElementById('backend-error'); // Reference for clearing backend errors
+            const loginButton = document.querySelector('.login-button');
+
+            const clearErrors = () => {
+                clientErrorMessageDiv.style.display = 'none';
+                clientErrorMessageDiv.textContent = '';
+                if (backendErrorMessageDiv) {
+                    backendErrorMessageDiv.style.display = 'none';
+                    backendErrorMessageDiv.textContent = '';
+                }
+            };
+
+            const displayClientError = (message) => {
+                clientErrorMessageDiv.textContent = message;
+                clientErrorMessageDiv.style.display = 'block';
+                // Add a temporary class for a pulse animation if desired, otherwise rely on static error-message style
+                clientErrorMessageDiv.classList.add('pulse-error');
+                setTimeout(() => {
+                    clientErrorMessageDiv.classList.remove('pulse-error');
+                }, 1500); // Remove after a short period
+            };
+
+            // Clear errors when user starts typing
+            usernameInput.addEventListener('input', clearErrors);
+            passwordInput.addEventListener('input', clearErrors);
+
+            loginForm.addEventListener('submit', (event) => {
+                // IMPORTANT: Do NOT call event.preventDefault() here.
+                // The form MUST submit to the backend for server-side validation.
+
+                clearErrors(); // Clear any previous client or backend errors
+
+                // Perform client-side validation for immediate feedback
+                if (usernameInput.value.trim() === '') {
+                    displayClientError('Username cannot be empty.');
+                } else if (passwordInput.value.trim() === '') {
+                    displayClientError('Password cannot be empty.');
+                } else if (usernameInput.value.trim().length < 3) {
+                    displayClientError('Username must be at least 3 characters.');
+                } else if (passwordInput.value.trim().length < 6) {
+                    displayClientError('Password must be at least 6 characters.');
+                }
+
+                // Visual feedback for button submission
+                loginButton.classList.add('button-submitting');
+                // Remove after a short period, assuming a quick submit or server response will reload/redirect
+                setTimeout(() => {
+                    loginButton.classList.remove('button-submitting');
+                }, 2000); 
+            });
+
+            // If a backend error message is present on page load, ensure it's visible.
+            if (backendErrorMessageDiv && backendErrorMessageDiv.textContent.trim() !== '') {
+                backendErrorMessageDiv.style.display = 'block';
+            }
+        });
+
+        // Dynamically add CSS for client error pulse (reusing existing error-glow keyframes)
+        const style = document.createElement('style');
+        style.textContent = `
+            .pulse-error {
+                animation: error-glow 0.5s linear 3 alternate; /* Quick pulse for client-side errors */
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

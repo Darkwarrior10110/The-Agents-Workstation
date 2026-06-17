@@ -1,0 +1,9 @@
+{
+  "command": "mkdir -p todo_api/app/models todo_api/app/routes",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.013,
+  "traceback_analysis": null,
+  "is_stable": true
+}

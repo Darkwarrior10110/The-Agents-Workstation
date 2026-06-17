@@ -1,0 +1,338 @@
+/* Global Styles */
+:root {
+    --neon-blue: #00f0ff;
+    --neon-blue-dark: #00aaff;
+    --neon-magenta: #ff00ff;
+    --neon-green: #00ff88;
+    --dark-bg: #0a0a0c;
+    --dark-grey: #1a1a1e;
+    --light-grey: #e0e0e0;
+    --text-color: var(--light-grey);
+    --border-color: #333;
+    --glitch-color-1: var(--neon-blue);
+    --glitch-color-2: var(--neon-magenta);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Share Tech Mono', monospace;
+    background: linear-gradient(135deg, var(--dark-bg) 0%, #000000 100%);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Subtle background animation */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(0, 255, 255, 0.05) 1px, rgba(0, 255, 255, 0.05) 3px), repeating-linear-gradient(90deg, transparent, transparent 1px, rgba(255, 0, 255, 0.05) 1px, rgba(255, 0, 255, 0.05) 3px);
+    opacity: 0.3;
+    animation: bg-flicker 15s infinite alternate;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes bg-flicker {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.02); }
+}
+
+/* Login Container */
+.login-container {
+    background: var(--dark-grey);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 40px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 60px rgba(255, 0, 255, 0.2);
+    animation: container-flicker 10s infinite alternate;
+    z-index: 1;
+}
+
+@keyframes container-flicker {
+    0%, 100% { box-shadow: 0 0 30px rgba(0, 240, 255, 0.4), 0 0 60px rgba(255, 0, 255, 0.2); }
+    50% { box-shadow: 0 0 35px rgba(0, 240, 255, 0.5), 0 0 65px rgba(255, 0, 255, 0.3); }
+}
+
+/* Glitch Effect Background (overlay) */
+.login-glitch-effect {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    pointer-events: none;
+    background: transparent;
+    z-index: 0;
+    animation: background-glitch 5s infinite linear alternate;
+    opacity: 0.1;
+}
+
+@keyframes background-glitch {
+    0% { transform: translate(0, 0) scale(1.0); filter: blur(0px); }
+    10% { transform: translate(-2px, -2px) scale(1.01); filter: blur(0.5px); opacity: 0.15;}
+    20% { transform: translate(2px, 2px) scale(0.99); filter: blur(0px); }
+    30% { transform: translate(-3px, 1px) scale(1.02); filter: blur(0.7px); opacity: 0.1;}
+    40% { transform: translate(1px, -3px) scale(1.0); filter: blur(0px); }
+    50% { transform: translate(-1px, 2px) scale(1.01); filter: blur(0.5px); opacity: 0.2;}
+    60% { transform: translate(2px, -1px) scale(0.98); filter: blur(0px); }
+    70% { transform: translate(-2px, -2px) scale(1.03); filter: blur(0.8px); opacity: 0.15;}
+    80% { transform: translate(1px, 1px) scale(1.0); filter: blur(0px); }
+    90% { transform: translate(-3px, 0px) scale(1.01); filter: blur(0.6px); opacity: 0.1;}
+    100% { transform: translate(0, 0) scale(1.0); filter: blur(0px); }
+}
+
+/* Titles */
+.login-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.8em;
+    color: var(--neon-blue);
+    text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue), 0 0 40px rgba(0, 240, 255, 0.6);
+    margin-bottom: 5px;
+    letter-spacing: 3px;
+    animation: text-flicker 3s infinite alternate;
+    position: relative;
+    z-index: 2;
+}
+
+.login-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1em;
+    color: var(--neon-magenta);
+    text-shadow: 0 0 5px var(--neon-magenta), 0 0 10px rgba(255, 0, 255, 0.4);
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    animation: text-flicker 5s infinite alternate reverse;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes text-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { 
+        text-shadow: 
+            0 0 4px var(--neon-blue),
+            0 0 11px var(--neon-blue),
+            0 0 19px var(--neon-blue),
+            0 0 40px rgba(0, 240, 255, 0.6),
+            0 0 80px rgba(0, 240, 255, 0.6),
+            0 0 90px rgba(0, 240, 255, 0.6),
+            0 0 100px rgba(0, 240, 255, 0.6),
+            0 0 150px rgba(0, 240, 255, 0.6);
+    }
+    20%, 24%, 55% {
+        text-shadow: none;
+    }
+}
+
+/* Error Message */
+.error-message {
+    background-color: rgba(255, 0, 255, 0.2);
+    color: var(--neon-magenta);
+    border: 1px solid var(--neon-magenta);
+    padding: 10px 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 0.9em;
+    animation: error-glow 1.5s infinite alternate;
+    position: relative;
+    z-index: 2;
+}
+
+@keyframes error-glow {
+    0% { box-shadow: 0 0 5px var(--neon-magenta); }
+    100% { box-shadow: 0 0 10px var(--neon-magenta), 0 0 20px rgba(255, 0, 255, 0.4); }
+}
+
+/* Form Elements */
+.input-group {
+    margin-bottom: 25px;
+    text-align: left;
+    position: relative;
+}
+
+.input-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--neon-green);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.9em;
+    text-shadow: 0 0 5px var(--neon-green);
+    letter-spacing: 1px;
+    position: relative;
+    z-index: 2;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    color: var(--text-color);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1em;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: var(--neon-blue);
+    outline: none;
+    box-shadow: 0 0 8px var(--neon-blue), 0 0 15px rgba(0, 240, 255, 0.3);
+}
+
+.input-group .input-focus-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 0%;
+    background-color: var(--neon-blue);
+    transition: width 0.4s ease;
+    z-index: 3;
+}
+
+input[type="text"]:focus ~ .input-focus-border,
+input[type="password"]:focus ~ .input-focus-border {
+    width: 100%;
+}
+
+/* Button */
+.login-button {
+    background: linear-gradient(45deg, var(--neon-blue), var(--neon-magenta));
+    color: var(--dark-bg);
+    border: none;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-magenta), 0 0 5px rgba(255,255,255,0.8) inset;
+    animation: button-pulse 2s infinite alternate;
+    z-index: 2;
+}
+
+.login-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px var(--neon-blue), 0 0 40px var(--neon-magenta), 0 0 80px rgba(0, 240, 255, 0.6);
+}
+
+@keyframes button-pulse {
+    0% { box-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-magenta), 0 0 5px rgba(255,255,255,0.8) inset; }
+    100% { box-shadow: 0 0 20px var(--neon-blue-dark), 0 0 35px var(--neon-magenta), 0 0 8px rgba(255,255,255,0.9) inset; }
+}
+
+.login-button .button-glitch {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    animation: glitch-overlay 0.5s infinite step-end;
+    pointer-events: none;
+}
+
+.login-button:hover .button-glitch {
+    opacity: 0.2;
+}
+
+@keyframes glitch-overlay {
+    0% { clip-path: inset(0 0 100% 0); opacity: 0.1;}
+    25% { clip-path: inset(50% 0 50% 0); opacity: 0.2;}
+    50% { clip-path: inset(20% 0 80% 0); opacity: 0.1;}
+    75% { clip-path: inset(70% 0 30% 0); opacity: 0.2;}
+    100% { clip-path: inset(0 0 100% 0); opacity: 0.1;}
+}
+
+/* Links */
+.login-links {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9em;
+    position: relative;
+    z-index: 2;
+}
+
+.neon-link {
+    color: var(--neon-green);
+    text-decoration: none;
+    margin: 0 10px;
+    text-shadow: 0 0 5px var(--neon-green), 0 0 10px rgba(0, 255, 136, 0.4);
+    transition: text-shadow 0.3s ease, color 0.3s ease;
+}
+
+.neon-link:hover {
+    color: var(--light-grey);
+    text-shadow: 0 0 8px var(--neon-green), 0 0 15px rgba(0, 255, 136, 0.6);
+}
+
+.link-separator {
+    color: var(--border-color);
+    user-select: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 600px) {
+    .login-container {
+        padding: 30px 20px;
+        border-radius: 8px;
+    }
+
+    .login-title {
+        font-size: 2em;
+        letter-spacing: 2px;
+    }
+
+    .login-subtitle {
+        font-size: 0.8em;
+        margin-bottom: 25px;
+    }
+
+    .login-button {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+
+    .login-links {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .link-separator {
+        display: none;
+    }
+    .neon-link {
+        margin: 0;
+    }
+}

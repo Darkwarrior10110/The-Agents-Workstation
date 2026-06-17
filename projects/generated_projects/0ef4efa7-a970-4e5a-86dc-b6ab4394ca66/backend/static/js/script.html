@@ -1,0 +1,90 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    let errorMessageDiv = document.querySelector('.error-message'); // Existing backend error message div
+
+    // Function to display client-side validation messages
+    const displayClientErrorMessage = (message) => {
+        if (!errorMessageDiv) {
+            // If no error message div exists (e.g., no backend error initially),
+            // create one to display client-side warnings.
+            errorMessageDiv = document.createElement('div');
+            errorMessageDiv.classList.add('error-message'); // Reuse existing styling
+            loginForm.prepend(errorMessageDiv); // Add it before the form for visibility
+        }
+        errorMessageDiv.textContent = message;
+        errorMessageDiv.style.display = 'block'; // Ensure it's visible
+
+        // Add a temporary class to trigger a quick animation/pulse for client-side feedback
+        errorMessageDiv.classList.remove('error-pulse-client'); // Remove previous if any
+        void errorMessageDiv.offsetWidth; // Trigger reflow to restart animation
+        errorMessageDiv.classList.add('error-pulse-client');
+    };
+
+    // Function to clear error messages
+    const clearErrorMessages = () => {
+        if (errorMessageDiv) {
+            errorMessageDiv.textContent = '';
+            errorMessageDiv.style.display = 'none';
+            errorMessageDiv.classList.remove('error-pulse-client');
+        }
+        // Also clear any custom validity messages that might be set, though not blocking submission
+        usernameInput.setCustomValidity('');
+        passwordInput.setCustomValidity('');
+    };
+
+    // Clear errors when inputs are focused or changed, indicating user action to correct
+    usernameInput.addEventListener('input', clearErrorMessages);
+    passwordInput.addEventListener('input', clearErrorMessages);
+
+    loginForm.addEventListener('submit', (event) => {
+        clearErrorMessages(); // Clear any existing messages before re-validating
+
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        let clientWarnings = [];
+
+        // --- Client-side Optional Validation (Non-blocking) ---
+        // The HTML 'required' attribute already handles empty fields, showing native browser messages.
+        // This JavaScript adds additional non-blocking length checks for immediate user feedback.
+
+        // Note: Due to the 'required' attribute on inputs, native browser validation
+        // will prevent submission for empty fields BEFORE this JS runs.
+        // This JS focuses on other criteria (like minimum length) *if* fields are not empty.
+
+        if (username.length > 0 && username.length < 3) {
+            clientWarnings.push('Username must be at least 3 characters long.');
+        }
+
+        if (password.length > 0 && password.length < 6) {
+            clientWarnings.push('Password must be at least 6 characters long.');
+        }
+
+        if (clientWarnings.length > 0) {
+            displayClientErrorMessage(clientWarnings.join(' '));
+            // CRITICAL: Per instructions, DO NOT call event.preventDefault().
+            // The form will still submit, allowing the backend to perform definitive validation.
+            // This client-side message serves as a non-blocking warning.
+        }
+
+        // Optional: Add a subtle visual feedback to the button on submission attempt
+        const loginButton = loginForm.querySelector('.login-button');
+        loginButton.classList.add('button-submitting');
+        setTimeout(() => {
+            loginButton.classList.remove('button-submitting');
+        }, 1000); // Remove class after a short delay
+    });
+});
+
+// Add a simple CSS rule for the client-side error pulse effect dynamically if not in style.css
+// (This is an example; ideally, this would be in style.css, but for JS-only generation, it can be here)
+const style = document.createElement('style');
+style.textContent = `
+    .error-pulse-client {
+        animation: error-glow 0.5s ease-in-out alternate;
+    }
+    /* Using the existing @keyframes error-glow from style.css */
+`;
+document.head.appendChild(style);

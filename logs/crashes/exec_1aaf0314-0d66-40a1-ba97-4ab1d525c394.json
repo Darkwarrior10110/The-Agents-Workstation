@@ -1,0 +1,18 @@
+{
+  "command": "todo_app/venv/bin/uvicorn todo_app.app.main:app --host 0.0.0.0 --port 8001",
+  "exit_code": 1,
+  "stdout": "INFO:     127.0.0.1:37664 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37670 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37682 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37692 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37704 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37710 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37726 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37736 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:37750 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38072 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38088 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38104 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38110 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38116 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38124 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38128 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38130 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38142 - \"GET / HTTP/1.1\" 404 Not Found\nINFO:     127.0.0.1:38146 - \"GET / HTTP/1.1\" 404 Not Found\n",
+  "stderr": "INFO:     Started server process [740304]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [740304]\n",
+  "duration": 20.253,
+  "traceback_analysis": {
+    "error_type": "UnknownError",
+    "error_message": "An unknown error occurred during execution.",
+    "file_path": null,
+    "line_number": null,
+    "failing_code": null,
+    "root_cause": "boot_timeout",
+    "suggested_fix": "Analyze the traceback and implement a fix to address the crash.",
+    "is_syntax_error": false
+  },
+  "is_stable": false
+}

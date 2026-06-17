@@ -1,0 +1,9 @@
+{
+  "command": "echo \"fastapi\\nuvicorn\" > todo_app/requirements.txt",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.009,
+  "traceback_analysis": null,
+  "is_stable": true
+}

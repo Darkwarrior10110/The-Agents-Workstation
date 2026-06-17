@@ -1,0 +1,9 @@
+{
+  "command": "todo_app/backend/venv/bin/uvicorn todo_app.backend.main:app --port 8001 --host 0.0.0.0 & npm --prefix todo_app/frontend run dev -- --port 8001 --host",
+  "exit_code": 0,
+  "stdout": "INFO:     127.0.0.1:40860 - \"GET / HTTP/1.1\" 200 OK\n",
+  "stderr": "INFO:     Started server process [12145]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [12145]\n",
+  "duration": 4.196,
+  "traceback_analysis": null,
+  "is_stable": true
+}

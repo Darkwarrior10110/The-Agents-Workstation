@@ -1,0 +1,9 @@
+{
+  "command": "mkdir backend",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.118,
+  "traceback_analysis": null,
+  "is_stable": true
+}

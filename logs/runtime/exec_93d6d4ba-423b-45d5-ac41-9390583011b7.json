@@ -1,0 +1,9 @@
+{
+  "command": "cd todo-app && mkdir backend",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.01,
+  "traceback_analysis": null,
+  "is_stable": true
+}

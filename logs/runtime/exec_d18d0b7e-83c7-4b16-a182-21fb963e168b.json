@@ -1,0 +1,9 @@
+{
+  "command": "python3 -m venv todo_app/venv",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 6.085,
+  "traceback_analysis": null,
+  "is_stable": true
+}

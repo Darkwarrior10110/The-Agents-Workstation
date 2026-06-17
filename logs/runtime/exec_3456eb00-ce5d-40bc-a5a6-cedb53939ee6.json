@@ -1,0 +1,9 @@
+{
+  "command": "python3 -m venv backend/venv",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 6.113,
+  "traceback_analysis": null,
+  "is_stable": true
+}

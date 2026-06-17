@@ -1,0 +1,18 @@
+{
+  "command": "npm run dev --prefix ./frontend",
+  "exit_code": 1,
+  "stdout": "",
+  "stderr": "npm ERR! Missing script: \"dev\"\nnpm ERR! \nnpm ERR! To see a list of scripts, run:\nnpm ERR!   npm run\n\nnpm ERR! A complete log of this run can be found in:\nnpm ERR!     /home/dark_warrior/.npm/_logs/2026-06-15T22_46_03_477Z-debug-0.log\n",
+  "duration": 1.011,
+  "traceback_analysis": {
+    "error_type": "UnknownError",
+    "error_message": "An unknown error occurred during execution.",
+    "file_path": null,
+    "line_number": null,
+    "failing_code": null,
+    "root_cause": "runtime_crash",
+    "suggested_fix": "Analyze the traceback and implement a fix to address the crash.",
+    "is_syntax_error": false
+  },
+  "is_stable": false
+}

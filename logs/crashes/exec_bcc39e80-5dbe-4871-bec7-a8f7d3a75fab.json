@@ -1,0 +1,9 @@
+{
+  "command": "cd todo_app && source venv/bin/activate && python3 -m uvicorn app.main:app --host 0.0.0.0 --port 8001",
+  "exit_code": -1,
+  "stdout": "",
+  "stderr": "[Errno 3] No such process",
+  "duration": 1.011,
+  "traceback_analysis": null,
+  "is_stable": false
+}

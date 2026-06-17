@@ -1,0 +1,9 @@
+{
+  "command": "cd todo-app/frontend && npm create vite@latest . --yes -- --template react && npm install",
+  "exit_code": 0,
+  "stdout": "\u2502\n\u25c7  Scaffolding project in /home/dark_warrior/Projects/The-Agents-Workstations/projects/generated_projects/48db37e2-ecf4-4d77-9fb7-9f086f898c97/todo-app/frontend...\n\u2502\n\u2514  Done. Now run:\n\n  npm install\n  npm run dev\n\n\nadded 137 packages, and audited 138 packages in 23s\n\n32 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n",
+  "stderr": "",
+  "duration": 25.466,
+  "traceback_analysis": null,
+  "is_stable": true
+}

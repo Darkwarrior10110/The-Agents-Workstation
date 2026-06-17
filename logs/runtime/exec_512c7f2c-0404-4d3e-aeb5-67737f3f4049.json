@@ -1,0 +1,9 @@
+{
+  "command": "mkdir todo_app",
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "duration": 0.021,
+  "traceback_analysis": null,
+  "is_stable": true
+}

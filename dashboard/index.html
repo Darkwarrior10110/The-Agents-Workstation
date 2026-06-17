@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE-AGENTS-WORKSTATION // MISSION CONTROL</title>
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone@7.23.6/babel.min.js"></script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        aether: {
+                            dark: '#03050a',
+                            panel: 'rgba(10, 15, 30, 0.6)',
+                            border: 'rgba(34, 211, 238, 0.2)',
+                            accent: '#22d3ee', // Cyan
+                            purple: '#c026d3', // Fuchsia
+                            blue: '#3b82f6',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { 
+            background-color: #03050a; 
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(34, 211, 238, 0.05), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(192, 38, 211, 0.05), transparent 25%);
+            color: #e2e8f0; 
+        }
+        .aether-panel {
+            background-color: rgba(10, 15, 30, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(34, 211, 238, 0.03);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        .aether-glow { text-shadow: 0 0 10px rgba(34, 211, 238, 0.6); }
+        .purple-glow { text-shadow: 0 0 10px rgba(192, 38, 211, 0.6); }
+        
+        .agent-active {
+            border-color: rgba(192, 38, 211, 0.5);
+            background: linear-gradient(180deg, rgba(192,38,211,0.15) 0%, rgba(10,15,30,0.6) 100%);
+            box-shadow: 0 0 20px rgba(192, 38, 211, 0.2);
+        }
+        
+        .glass-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+            color: #fff;
+        }
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(34, 211, 238, 0.8);
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.3), inset 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .btn-launch {
+            background: linear-gradient(90deg, #0284c7, #c026d3);
+            box-shadow: 0 0 15px rgba(192, 38, 211, 0.4);
+            border: 1px solid rgba(255,255,255,0.2);
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-launch:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 0 25px rgba(34, 211, 238, 0.6);
+            filter: brightness(1.2);
+        }
+        .btn-launch:disabled {
+            background: #1e293b;
+            box-shadow: none;
+            border-color: #334155;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(34, 211, 238, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(192, 38, 211, 0.5); }
+    </style>
+</head>
+<body class="min-h-screen p-4 overflow-hidden flex flex-col font-sans">
+    <div id="root" class="flex-grow flex flex-col h-full"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo, useRef } = React;
+
+        const App = () => {
+            const [state, setState] = useState(null);
+            const [connected, setConnected] = useState(false);
+            const [goalInput, setGoalInput] = useState("");
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [submitError, setSubmitError] = useState(null);
+            const timelineEndRef = useRef(null);
+
+            useEffect(() => {
+                const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+                const wsUrl = `${protocol}//${window.location.host}/api/dashboard/stream`;
+                
+                const connectWs = () => {
+                    const ws = new WebSocket(wsUrl);
+                    ws.onopen = () => setConnected(true);
+                    ws.onmessage = (event) => {
+                        try {
+                            const data = JSON.parse(event.data);
+                            if (data.full_state) setState(data.full_state);
+                        } catch (e) { console.error("Error parsing WS message", e); }
+                    };
+                    ws.onclose = () => {
+                        setConnected(false);
+                        setTimeout(connectWs, 3000);
+                    };
+                };
+                connectWs();
+            }, []);
+
+            useEffect(() => {
+                timelineEndRef.current?.scrollIntoView({ behavior: "smooth" });
+            }, [state?.timeline]);
+
+            const submitGoal = async () => {
+                if (!goalInput.trim()) return;
+                setIsSubmitting(true);
+                setSubmitError(null);
+                try {
+                    // Fire and forget, UI will update via WebSocket state stream
+                    fetch('/execute', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ goal: goalInput })
+                    }).then(async res => {
+                        if (!res.ok) {
+                            const errData = await res.json().catch(()=>({}));
+                            setSubmitError(errData.detail || "Mission failed to launch.");
+                        }
+                        setIsSubmitting(false);
+                    }).catch(err => {
+                        setSubmitError(err.message);
+                        setIsSubmitting(false);
+                    });
+                    
+                    // Clear input immediately upon successful dispatch
+                    setGoalInput("");
+                } catch (e) {
+                    setSubmitError(e.message);
+                    setIsSubmitting(false);
+                }
+            };
+
+            if (!state) {
+                return <div className="flex-grow flex items-center justify-center aether-glow text-cyan-400 text-2xl animate-pulse font-light tracking-widest">ESTABLISHING AETHERIC LINK...</div>;
+            }
+
+            const agents = Object.entries(state.agents);
+            const isIdle = state.status === 'Idle' || state.status === 'Failed' || state.status === 'Online';
+
+            return (
+                <div className="flex flex-col h-full gap-4 max-h-[95vh]">
+                    {/* Header */}
+                    <header className="aether-panel px-6 py-4 flex justify-between items-center shrink-0">
+                        <div>
+                            <h1 className="text-2xl font-extrabold tracking-[0.2em] bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-fuchsia-400 drop-shadow-md">
+                                THE-AGENTS-WORKSTATION
+                            </h1>
+                            <div className="text-xs text-cyan-500/70 uppercase tracking-[0.3em] mt-1 font-semibold">Mission Control Console_v2.0</div>
+                        </div>
+                        <div className="flex items-center gap-8">
+                            <div className="text-right">
+                                <div className="text-[10px] text-cyan-600/70 uppercase font-bold tracking-widest">Local Time</div>
+                                <div className="text-lg font-bold tracking-wider text-cyan-100 font-mono">
+                                    {state?.server_time || '--:--:--'}
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-[10px] text-cyan-600/70 uppercase font-bold tracking-widest">System Status</div>
+                                <div className={`text-lg font-bold tracking-wider ${isIdle ? 'text-slate-500' : 'text-cyan-300 aether-glow'}`}>
+                                    {String(state?.status || 'UNKNOWN').toUpperCase()}
+                                </div>
+                            </div>
+                            <div className="text-right">
+                                <div className="text-[10px] text-cyan-600/70 uppercase font-bold tracking-widest">Uplink</div>
+                                <div className={`text-lg font-bold tracking-wider ${connected ? 'text-cyan-300 aether-glow' : 'text-rose-500'}`}>
+                                    {connected ? 'STABLE' : 'OFFLINE'}
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Mission Composer */}
+                    <div className={`aether-panel px-6 py-5 shrink-0 transition-all duration-500 ${isIdle ? 'h-auto opacity-100' : 'h-auto opacity-90'}`}>
+                        {isIdle ? (
+                            <div className="flex flex-col gap-3">
+                                <div className="flex justify-between items-end mb-1">
+                                    <h2 className="text-sm font-bold tracking-[0.15em] text-cyan-400 flex items-center gap-2">
+                                        <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></div>
+                                        INITIATE NEW MISSION
+                                    </h2>
+                                    {submitError && <span className="text-rose-400 text-xs font-bold">{submitError}</span>}
+                                </div>
+                                <textarea 
+                                    className="w-full glass-input rounded-xl p-4 text-sm font-mono placeholder-cyan-800/50 resize-none transition-all"
+                                    rows="3"
+                                    placeholder="Describe the application architecture, stack, and features you wish to synthesize..."
+                                    value={goalInput}
+                                    onChange={(e) => setGoalInput(e.target.value)}
+                                    disabled={isSubmitting}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) submitGoal();
+                                    }}
+                                />
+                                <div className="flex justify-between items-center mt-1">
+                                    <span className="text-xs text-cyan-700/50 font-mono">{goalInput.length} chars | Press Cmd+Enter to launch</span>
+                                    <button 
+                                        className="btn-launch px-8 py-2.5 rounded-lg text-sm font-bold tracking-widest text-white"
+                                        onClick={submitGoal}
+                                        disabled={isSubmitting || !goalInput.trim()}
+                                    >
+                                        {isSubmitting ? 'INITIALIZING PROTOCOLS...' : 'LAUNCH MISSION'}
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="flex justify-between items-center">
+                                <div>
+                                    <h2 className="text-[10px] uppercase tracking-[0.2em] text-cyan-600 font-bold mb-1">Active Mission Directive</h2>
+                                    <div className="text-sm font-medium text-cyan-100 leading-relaxed max-w-4xl">{state?.goal}</div>
+                                </div>
+                                <div className="flex items-center gap-4 shrink-0">
+                                    <button 
+                                        onClick={() => fetch('/terminate', {method: 'POST'})} 
+                                        className="px-4 py-1.5 rounded-full bg-rose-900/40 border border-rose-400/30 text-rose-300 text-xs font-bold tracking-widest shadow-[0_0_10px_rgba(244,63,94,0.2)] hover:bg-rose-500/20 transition-all"
+                                    >
+                                        TERMINATE MISSION
+                                    </button>
+                                    <div className="px-4 py-1.5 rounded-full bg-cyan-900/40 border border-cyan-400/30 text-cyan-300 text-xs font-bold tracking-widest animate-pulse shadow-[0_0_10px_rgba(34,211,238,0.2)]">
+                                        EXECUTING
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Main Content Grid */}
+                    <div className="flex gap-4 flex-grow overflow-hidden">
+                        
+                        {/* Left Column: Agent Matrix */}
+                        <div className="w-1/4 flex flex-col gap-4">
+                            <div className="aether-panel p-5 h-full flex flex-col">
+                                <h2 className="text-xs font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-3 mb-4 uppercase">Neural Matrix</h2>
+                                <div className="flex-grow overflow-y-auto pr-2 space-y-3">
+                                    {(agents || []).map(([name, info]) => {
+                                        const isActive = info?.status !== 'Idle';
+                                        return (
+                                            <div key={name} className={`border rounded-lg p-3 transition-all duration-300 ${isActive ? 'agent-active' : 'border-slate-800/60 bg-slate-900/30'}`}>
+                                                <div className="flex justify-between items-center mb-2">
+                                                    <span className={`text-xs uppercase font-bold tracking-wider ${isActive ? 'text-fuchsia-300 purple-glow' : 'text-slate-500'}`}>{name}</span>
+                                                    <span className={`text-[10px] px-2 py-0.5 rounded font-bold tracking-wider ${isActive ? 'bg-fuchsia-900/50 text-fuchsia-200 border border-fuchsia-500/30' : 'bg-slate-800/50 text-slate-500'}`}>
+                                                        {String(info?.status || 'UNKNOWN').toUpperCase()}
+                                                    </span>
+                                                </div>
+                                                <div className={`text-[11px] truncate font-mono ${isActive ? 'text-cyan-100' : 'text-slate-600'}`} title={info?.task || ""}>
+                                                    {info?.task || "Awaiting directives..."}
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Middle Column: Timeline & Gateway */}
+                        <div className="w-1/2 flex flex-col gap-4">
+                            {/* LLM Gateway Strip */}
+                            <div className="aether-panel p-4 flex justify-between items-center shrink-0">
+                                <div>
+                                    <span className="text-[10px] text-cyan-600 font-bold tracking-widest uppercase block mb-1">Gateway Provider</span>
+                                    <span className="text-sm font-bold text-fuchsia-400 purple-glow tracking-wide">{String(state?.llm_gateway?.active_provider || 'NONE').toUpperCase()}</span>
+                                </div>
+                                <div>
+                                    <span className="text-[10px] text-cyan-600 font-bold tracking-widest uppercase block mb-1">Active Model</span>
+                                    <span className="text-sm font-mono text-cyan-200">{state?.llm_gateway?.active_model || 'NONE'}</span>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-[10px] text-cyan-600 font-bold tracking-widest uppercase block mb-1">Key Slot</span>
+                                    <span className="text-sm font-mono text-cyan-400">[{state?.llm_gateway?.key_index || 'NONE'}]</span>
+                                </div>
+                            </div>
+                            
+                            {/* Live Timeline */}
+                            <div className="aether-panel p-5 flex-grow flex flex-col overflow-hidden">
+                                <h2 className="text-xs font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-3 mb-4 uppercase">Event Telemetry Stream</h2>
+                                <div className="flex-grow overflow-y-auto font-mono text-[11px] space-y-1.5 pb-4 leading-relaxed">
+                                    {!state?.timeline || state.timeline.length === 0 ? (
+                                        <div className="text-slate-600 italic">No events logged in current session.</div>
+                                    ) : (
+                                        state.timeline.map((log, idx) => {
+                                            const time = new Date((log?.timestamp || 0) * 1000).toLocaleTimeString([], {hour12:false});
+                                            let colorClass = "text-cyan-300";
+                                            if (log?.level === "error") colorClass = "text-rose-400";
+                                            if (log?.level === "warning") colorClass = "text-amber-300";
+                                            if (log?.agent === "SYSTEM") colorClass = "text-blue-300";
+                                            
+                                            return (
+                                                <div key={idx} className={`flex gap-3 hover:bg-white/5 p-1 rounded transition-colors ${colorClass}`}>
+                                                    <span className="opacity-40 shrink-0">[{time}]</span>
+                                                    <span className="uppercase w-20 shrink-0 truncate opacity-80 font-bold">{log?.agent || 'SYS'}</span>
+                                                    <span className="break-all opacity-90">{log?.message || ''}</span>
+                                                </div>
+                                            );
+                                        })
+                                    )}
+                                    <div ref={timelineEndRef} />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Telemetry & Files */}
+                        <div className="w-1/4 flex flex-col gap-4">
+                            {/* Telemetry */}
+                            <div className="aether-panel p-5 shrink-0">
+                                <h2 className="text-xs font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-3 mb-4 uppercase">System Metrics</h2>
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div className="border border-cyan-900/30 rounded-lg p-3 text-center bg-black/20">
+                                        <div className="text-[10px] text-cyan-600 font-bold tracking-widest uppercase mb-1">Artifacts</div>
+                                        <div className="text-2xl font-bold text-cyan-300 aether-glow">{state?.telemetry?.artifacts_generated || 0}</div>
+                                    </div>
+                                    <div className="border border-cyan-900/30 rounded-lg p-3 text-center bg-black/20">
+                                        <div className="text-[10px] text-cyan-600 font-bold tracking-widest uppercase mb-1">LLM Req</div>
+                                        <div className="text-2xl font-bold text-cyan-300 aether-glow">{state?.telemetry?.llm_requests || 0}</div>
+                                    </div>
+                                    <div className="border border-rose-900/30 rounded-lg p-3 text-center bg-rose-950/10 col-span-2">
+                                        <div className="text-[10px] text-rose-500/70 font-bold tracking-widest uppercase mb-1">Self-Healing Cycles</div>
+                                        <div className="text-xl font-bold text-rose-400 drop-shadow-[0_0_5px_rgba(244,63,94,0.4)]">{state?.telemetry?.repair_attempts || 0}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Files */}
+                            <div className="aether-panel p-5 flex-grow flex flex-col overflow-hidden">
+                                <h2 className="text-xs font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-3 mb-4 uppercase">Artifact Explorer</h2>
+                                <div className="flex-grow overflow-y-auto font-mono text-[11px] text-cyan-100/70 space-y-1.5">
+                                    {!state?.files || state.files.length === 0 ? (
+                                        <div className="text-slate-600 italic">No artifacts synthesized.</div>
+                                    ) : (
+                                        state.files.map((file, idx) => (
+                                            <div key={idx} className="truncate hover:text-cyan-300 hover:bg-white/5 p-1 rounded transition-colors cursor-default">
+                                                <span className="text-cyan-600 mr-2">├─</span>{file}
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
