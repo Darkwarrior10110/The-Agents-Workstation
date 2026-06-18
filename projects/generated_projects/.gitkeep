@@ -1,0 +1,2 @@
+projects/generated_projects/*
+!projects/generated_projects/.gitkeep
