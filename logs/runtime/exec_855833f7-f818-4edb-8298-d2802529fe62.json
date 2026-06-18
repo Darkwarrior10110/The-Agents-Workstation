@@ -1,9 +1,0 @@
-{
-  "command": "npm --prefix todo_app/frontend install",
-  "exit_code": 0,
-  "stdout": "\nadded 137 packages, and audited 138 packages in 33s\n\n32 packages are looking for funding\n  run `npm fund` for details\n\nfound 0 vulnerabilities\n",
-  "stderr": "",
-  "duration": 34.049,
-  "traceback_analysis": null,
-  "is_stable": true
-}

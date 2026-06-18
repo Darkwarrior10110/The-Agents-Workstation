@@ -1,9 +1,0 @@
-{
-  "command": "cd todo_app && python3 -m uvicorn main:app --port 8001",
-  "exit_code": -1,
-  "stdout": "",
-  "stderr": "[Errno 3] No such process",
-  "duration": 3.474,
-  "traceback_analysis": null,
-  "is_stable": false
-}

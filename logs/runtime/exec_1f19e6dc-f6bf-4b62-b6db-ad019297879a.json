@@ -1,9 +1,0 @@
-{
-  "command": "mkdir -p templates",
-  "exit_code": 0,
-  "stdout": "",
-  "stderr": "",
-  "duration": 0.014,
-  "traceback_analysis": null,
-  "is_stable": true
-}

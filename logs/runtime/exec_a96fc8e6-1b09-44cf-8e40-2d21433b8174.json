@@ -1,9 +1,0 @@
-{
-  "command": "npm create vite@latest frontend -- --template react",
-  "exit_code": 0,
-  "stdout": "Need to install the following packages:\n  create-vite@9.0.7\nOk to proceed? (y) ",
-  "stderr": "",
-  "duration": 120.11,
-  "traceback_analysis": null,
-  "is_stable": true
-}

@@ -1,9 +1,0 @@
-{
-  "command": "mkdir -p backend/templates backend/static/css backend/static/js",
-  "exit_code": 0,
-  "stdout": "",
-  "stderr": "",
-  "duration": 0.016,
-  "traceback_analysis": null,
-  "is_stable": true
-}

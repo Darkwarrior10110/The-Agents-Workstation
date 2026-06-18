@@ -1,9 +1,0 @@
-{
-  "command": "backend/venv/bin/python3 -m uvicorn backend.main:app --port 8001 --host 0.0.0.0",
-  "exit_code": 0,
-  "stdout": "INFO:     127.0.0.1:35434 - \"GET / HTTP/1.1\" 200 OK\n",
-  "stderr": "INFO:     Started server process [99534]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)\nINFO:     Shutting down\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [99534]\n",
-  "duration": 2.264,
-  "traceback_analysis": null,
-  "is_stable": true
-}

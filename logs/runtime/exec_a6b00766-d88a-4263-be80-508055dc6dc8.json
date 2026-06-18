@@ -1,9 +1,0 @@
-{
-  "command": "cd todo-app/backend && python3 -m venv venv",
-  "exit_code": 0,
-  "stdout": "",
-  "stderr": "",
-  "duration": 4.696,
-  "traceback_analysis": null,
-  "is_stable": true
-}

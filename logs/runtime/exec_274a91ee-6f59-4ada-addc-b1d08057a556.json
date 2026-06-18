@@ -1,9 +1,0 @@
-{
-  "command": "cd todo_app/app && touch main.py models.py schemas.py routes.py",
-  "exit_code": 0,
-  "stdout": "",
-  "stderr": "",
-  "duration": 0.031,
-  "traceback_analysis": null,
-  "is_stable": true
-}
