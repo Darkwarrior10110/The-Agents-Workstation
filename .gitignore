@@ -1,0 +1,19 @@
+# Environments
+venv/
+env/
+.env
+
+# Python Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Runtime Data & Logs
+logs/
+storage/cache/
+storage/logs/
+
+# Generated Projects
+projects/generated_projects/*
+!projects/generated_projects/.gitkeep
