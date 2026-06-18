@@ -9,11 +9,18 @@ __pycache__/
 *.pyo
 *.pyd
 
-# Runtime Data & Logs
-logs/
-storage/cache/
-storage/logs/
+# Ignore contents of these folders, but keep the folders themselves
+logs/crashes/*
+!logs/crashes/.gitkeep
 
-# Generated Projects
+logs/runtime/*
+!logs/runtime/.gitkeep
+
+storage/cache/*
+!storage/cache/.gitkeep
+
+storage/logs/*
+!storage/logs/.gitkeep
+
 projects/generated_projects/*
 !projects/generated_projects/.gitkeep
