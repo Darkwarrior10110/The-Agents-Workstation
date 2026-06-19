@@ -1,0 +1,3 @@
+ID: YOUR_PLANNER_AGENT_ID
+API key: band_a_YOUR_PLANNER_API_KEY
+Handle: @your_handle/planner-agent

@@ -24,3 +24,8 @@ storage/logs/*
 
 projects/generated_projects/*
 !projects/generated_projects/.gitkeep
+
+# Band of Agents Credentials
+Planner.txt
+Backend.txt
+Supervisor.txt

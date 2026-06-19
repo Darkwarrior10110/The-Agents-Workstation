@@ -56,6 +56,17 @@
    CLAUDE_MODEL=claude-3-5-sonnet-latest
    ```
 
+5. **Configure Band of Agents Credentials (Optional for Judges):**
+   To enable live Band of Agents coordination and show the cyberpunk Band Communication panel:
+   * Copy `Planner.example.txt` to `Planner.txt`
+   * Copy `Backend.example.txt` to `Backend.txt`
+   * Copy `Supervisor.example.txt` to `Supervisor.txt`
+   
+   Open each newly created file and fill in your respective Band Agent ID, API Key, and Handle details.
+   
+   *(Note: The real `.txt` files containing your private credentials are excluded via `.gitignore` to ensure your keys are never leaked to public repositories.)*
+
+
 ## 🚀 Usage
 
 1. **Start the Workstation:**

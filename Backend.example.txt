@@ -1,0 +1,3 @@
+ID: YOUR_BACKEND_AGENT_ID
+API key: band_a_YOUR_BACKEND_API_KEY
+Handle: @your_handle/backend-agent

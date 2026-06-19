@@ -1,0 +1,3 @@
+ID: YOUR_SUPERVISOR_AGENT_ID
+API key: band_a_YOUR_SUPERVISOR_API_KEY
+Handle: @your_handle/supervisor-agent
