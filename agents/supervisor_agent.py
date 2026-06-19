@@ -289,11 +289,10 @@ class SupervisorAgent(BaseAgent):
         # Band Integration
         try:
             from core.band_service import band_service
-            import asyncio
             details = report.summary
             if overall_status == ValidationStatus.FAILED:
                 details += f" ({len(failed_tasks)} tasks failed, {len(repair_tasks_data)} repair tasks generated)"
-            asyncio.create_task(band_service.publish_supervisor_update(overall_status.name, details))
+            await band_service.publish_supervisor_update(overall_status.name, details)
         except Exception as e:
             self.log(f"Band Integration Error: {str(e)}", "warning")
             

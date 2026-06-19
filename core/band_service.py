@@ -67,6 +67,27 @@ class BandService:
             system_logger.error(f"[BAND] Failed to initialize Band SDK: {str(e)}")
             self.is_active = False
 
+    def _build_mention(self, role: str):
+        """Build a mention object for the given agent role."""
+        from band.client.rest import ChatMessageRequestMentionsItem
+        creds = self.credentials.get(role)
+        if not creds:
+            return None
+        return ChatMessageRequestMentionsItem(
+            id=creds["id"],
+            handle=creds.get("handle")
+        )
+
+    def _build_all_other_mentions(self, sender_role: str):
+        """Build mention list for all agents EXCEPT the sender."""
+        mentions = []
+        for role in self.credentials:
+            if role != sender_role:
+                m = self._build_mention(role)
+                if m:
+                    mentions.append(m)
+        return mentions
+
     async def _ensure_room(self, goal_id: str):
         if not self.is_active or self.active_room:
             return
@@ -78,29 +99,43 @@ class BandService:
                 chat=ChatRoomRequest(task_id=goal_id)
             )
             
-            # Extract chat ID safely
-            if hasattr(response, 'id'):
+            # SDK returns CreateAgentChatResponse with response.data.id
+            if hasattr(response, 'data') and hasattr(response.data, 'id'):
+                self.active_room = response.data.id
+            elif hasattr(response, 'id'):
                 self.active_room = response.id
-            elif hasattr(response, 'chat') and hasattr(response.chat, 'id'):
-                self.active_room = response.chat.id
             elif isinstance(response, dict):
-                self.active_room = response.get('id') or response.get('chat', {}).get('id')
+                self.active_room = response.get('data', {}).get('id') or response.get('id')
             
-            state_manager.push_event("band_status", {
-                "active_room": self.active_room,
-                "connected_agents": list(self.clients.keys())
-            })
-            system_logger.info(f"[BAND] Created Band room: {self.active_room}")
+            if self.active_room:
+                state_manager.push_event("band_status", {
+                    "active_room": self.active_room,
+                    "connected_agents": list(self.clients.keys())
+                })
+                system_logger.info(f"[BAND] Created Band room: {self.active_room}")
+            else:
+                system_logger.error("[BAND] Room created but could not extract room ID from response.")
         except Exception as e:
             system_logger.error(f"[BAND] Failed to create Band room: {str(e)}")
 
     async def _send_message(self, agent_role: str, text: str, mentions: list = None):
-        if not self.is_active or not self.active_room: return
+        """Send a message to the Band room. Mentions are REQUIRED by the Band API."""
+        if not self.is_active or not self.active_room:
+            return
+        
+        if not mentions:
+            # Band API requires at least one mention; fall back to mentioning all other agents
+            mentions = self._build_all_other_mentions(agent_role)
+        
+        if not mentions:
+            system_logger.warning(f"[BAND] {agent_role} cannot send message: no valid mentions available.")
+            return
+            
         try:
             from band.client.rest import ChatMessageRequest
             client = self.clients[agent_role]
             
-            req = ChatMessageRequest(content=text, mentions=mentions or [])
+            req = ChatMessageRequest(content=text, mentions=mentions)
             await client.agent_api_messages.create_agent_chat_message(
                 chat_id=self.active_room,
                 message=req
@@ -114,13 +149,11 @@ class BandService:
         if not self.is_active: return
         await self._ensure_room(goal_state.goal_id)
         
+        # Mention backend to hand off work
         mentions = []
-        try:
-            from band.client.rest import ChatMessageRequestMentionsItem
-            backend_creds = self.credentials["backend"]
-            mentions = [ChatMessageRequestMentionsItem(id=backend_creds["id"], handle=backend_creds["handle"])]
-        except Exception:
-            pass
+        backend_mention = self._build_mention("backend")
+        if backend_mention:
+            mentions.append(backend_mention)
             
         backend_handle = self.credentials.get("backend", {}).get("handle", "@backend")
         msg = f"Task planning complete. {len(goal_state.tasks)} tasks identified. {backend_handle}, please proceed with backend generation."
@@ -128,19 +161,24 @@ class BandService:
 
     async def publish_backend_start(self, task_desc: str):
         if not self.is_active: return
-        msg = f"Received work assignment: {task_desc}. Initiating generation flow..."
-        await self._send_message("backend", msg)
+        # Mention planner to acknowledge receipt of work
+        mentions = []
+        planner_mention = self._build_mention("planner")
+        if planner_mention:
+            mentions.append(planner_mention)
+            
+        planner_handle = self.credentials.get("planner", {}).get("handle", "@planner")
+        msg = f"{planner_handle} Received work assignment: {task_desc}. Initiating generation flow..."
+        await self._send_message("backend", msg, mentions)
 
     async def publish_backend_complete(self, target_path: str):
         if not self.is_active: return
         
+        # Mention supervisor to hand off for validation
         mentions = []
-        try:
-            from band.client.rest import ChatMessageRequestMentionsItem
-            sup_creds = self.credentials["supervisor"]
-            mentions = [ChatMessageRequestMentionsItem(id=sup_creds["id"], handle=sup_creds["handle"])]
-        except Exception:
-            pass
+        sup_mention = self._build_mention("supervisor")
+        if sup_mention:
+            mentions.append(sup_mention)
             
         sup_handle = self.credentials.get("supervisor", {}).get("handle", "@supervisor")
         msg = f"Completed backend generation for {target_path}. Handing off to {sup_handle} for validation."
@@ -148,7 +186,18 @@ class BandService:
 
     async def publish_supervisor_update(self, status: str, details: str):
         if not self.is_active: return
-        msg = f"Supervisor Update: {status}. Details: {details}"
-        await self._send_message("supervisor", msg)
+        # Mention planner and backend to report validation results
+        mentions = []
+        planner_mention = self._build_mention("planner")
+        backend_mention = self._build_mention("backend")
+        if planner_mention:
+            mentions.append(planner_mention)
+        if backend_mention:
+            mentions.append(backend_mention)
+            
+        planner_handle = self.credentials.get("planner", {}).get("handle", "@planner")
+        backend_handle = self.credentials.get("backend", {}).get("handle", "@backend")
+        msg = f"{planner_handle} {backend_handle} Supervisor Update: {status}. Details: {details}"
+        await self._send_message("supervisor", msg, mentions)
 
 band_service = BandService.get_instance()

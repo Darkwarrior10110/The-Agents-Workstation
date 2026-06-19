@@ -72,8 +72,7 @@ class PlannerAgent(BaseAgent):
                 # Band Integration
                 try:
                     from core.band_service import band_service
-                    import asyncio
-                    asyncio.create_task(band_service.publish_planner_summary(goal_state))
+                    await band_service.publish_planner_summary(goal_state)
                 except Exception as e:
                     self.log(f"Band Integration Error: {str(e)}", "warning")
                 

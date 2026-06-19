@@ -20,8 +20,7 @@ class BackendAgent(BaseAgent):
         # Band Integration: Receive work
         try:
             from core.band_service import band_service
-            import asyncio
-            asyncio.create_task(band_service.publish_backend_start(task.description))
+            await band_service.publish_backend_start(task.description)
         except Exception as e:
             self.log(f"Band Integration Error: {str(e)}", "warning")
         
@@ -93,8 +92,7 @@ class BackendAgent(BaseAgent):
             # Band Integration: Complete work
             try:
                 from core.band_service import band_service
-                import asyncio
-                asyncio.create_task(band_service.publish_backend_complete(target_path))
+                await band_service.publish_backend_complete(target_path)
             except Exception as e:
                 self.log(f"Band Integration Error: {str(e)}", "warning")
                 
