@@ -18,18 +18,21 @@
 *   **Supervisor:** The QA Lead. Reviews generated files, grades stability, predicts architectural risks, and triggers repair loops.
 *   **Debug & Runtime Repair:** The Fixers. Analyze tracebacks, parse errors, and surgically patch broken files using Anti-Loop Memory to avoid repeating past mistakes.
 
+## NOTE: NOT RECOMMENDED ON WINDOWS OR macOS PREFER TO USE LINUX DISTRIBUTION 
+## RECOMMENDED ON PARROT OS 7.1 ##
+
 ## ⚙️ Installation
 
 1. **Clone the repository:**
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/Darkwarrior10110/The-Agents-Workstation
    cd The-Agents-Workstation
    ```
 
 2. **Create and activate a virtual environment:**
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  # On Windows use: venv\Scripts\activate
+   source venv/bin/activate
    ```
 
 3. **Install dependencies:**
