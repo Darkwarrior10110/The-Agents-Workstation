@@ -137,8 +137,9 @@ Once started, the backend server will launch on `http://127.0.0.1:8000`.
 
 1. Open your browser and navigate to: **`http://127.0.0.1:8000/dashboard`**
 2. In the **Mission Composer** panel, type in what you want to build (e.g., *"Create a beautiful React-based Pomodoro timer application with sound alerts"*).
-3. Click **LAUNCH MISSION**.
-4. **Monitor the Live Pipeline:**
+3. Recommended running dashboard in full screen
+4. Click **LAUNCH MISSION**.
+5. **Monitor the Live Pipeline:**
    * **Telemetry:** View real-time active LLM response times, token counts, and self-healing iterations.
    * **Band Communication Panel:** Watch the Planner, Backend, and Supervisor talk to each other in real-time as they hand over code, review structures, and request fixes.
    * **Sandbox Terminal Logs:** Watch terminal commands compile and run in real-time.
