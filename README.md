@@ -48,7 +48,15 @@ Before you begin, make sure you have the following installed:
 
 ---
 
-## ⚙️ Headache-Free Installation
+
+> [!IMPORTANT]
+> # INSTALLTION IS NOT RECOMMENED ON WINDOWS AND macOS PREFER TO USE LINUX DISTRO.
+> # RECOMMENED PARROT OS 7.1.
+
+
+---
+
+## ⚙️ Installation
 
 Follow these simple commands to set up the workstation:
 
@@ -64,12 +72,7 @@ cd The-Agents-Workstation
     python3 -m venv venv
     source venv/bin/activate
     ```
-*   **Windows:**
-    ```cmd
-    python -m venv venv
-    venv\Scripts\activate
-    ```
-
+    
 ### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
@@ -115,10 +118,6 @@ We have provided templates to make this easy. Simply copy the template files and
 3. **Supervisor Agent Configuration:**
    * Copy [Supervisor.example.txt](file:///home/dark_warrior/Projects/The-Agents-Workstations/Supervisor.example.txt) to a new file named `Supervisor.txt`
    * Open `Supervisor.txt` and fill in your Band details.
-
-> [!IMPORTANT]
-> The real `Planner.txt`, `Backend.txt`, and `Supervisor.txt` files are ignored in `.gitignore` so you never accidentally push your secret keys to GitHub.
-
 ---
 
 ## 🏃 How to Run & Launch
