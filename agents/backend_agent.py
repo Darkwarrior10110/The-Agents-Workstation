@@ -17,6 +17,14 @@ class BackendAgent(BaseAgent):
     async def execute(self, task: Task, context: Optional[Dict[str, Any]] = None) -> AgentResponse:
         self.log(f"Backend generating code for: {task.description}")
         
+        # Band Integration: Receive work
+        try:
+            from core.band_service import band_service
+            import asyncio
+            asyncio.create_task(band_service.publish_backend_start(task.description))
+        except Exception as e:
+            self.log(f"Band Integration Error: {str(e)}", "warning")
+        
         is_repair = getattr(task, "repair_instructions", None) is not None
         
         # Check cache if not repairing
@@ -81,6 +89,15 @@ class BackendAgent(BaseAgent):
                 self.cache.set(task.description, task.input_data, artifact)
             
             self.log(f"Successfully generated backend artifact: {target_path}")
+            
+            # Band Integration: Complete work
+            try:
+                from core.band_service import band_service
+                import asyncio
+                asyncio.create_task(band_service.publish_backend_complete(target_path))
+            except Exception as e:
+                self.log(f"Band Integration Error: {str(e)}", "warning")
+                
             return AgentResponse(
                 agent_name=self.name,
                 status=TaskStatus.COMPLETED,

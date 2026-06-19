@@ -69,6 +69,14 @@ class PlannerAgent(BaseAgent):
                 
                 self.log(f"Plan generated successfully with {len(processed_tasks)} tasks.")
                 
+                # Band Integration
+                try:
+                    from core.band_service import band_service
+                    import asyncio
+                    asyncio.create_task(band_service.publish_planner_summary(goal_state))
+                except Exception as e:
+                    self.log(f"Band Integration Error: {str(e)}", "warning")
+                
                 return AgentResponse(
                     agent_name=self.name,
                     status=TaskStatus.COMPLETED,

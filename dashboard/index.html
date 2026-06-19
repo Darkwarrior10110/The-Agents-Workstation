@@ -307,9 +307,9 @@
                             </div>
                             
                             {/* Live Timeline */}
-                            <div className="aether-panel p-5 flex-grow flex flex-col overflow-hidden">
-                                <h2 className="text-xs font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-3 mb-4 uppercase">Event Telemetry Stream</h2>
-                                <div className="flex-grow overflow-y-auto font-mono text-[11px] space-y-1.5 pb-4 leading-relaxed">
+                            <div className="aether-panel p-4 flex-grow flex flex-col overflow-hidden h-1/2">
+                                <h2 className="text-[10px] font-bold tracking-[0.2em] text-cyan-600 border-b border-cyan-900/50 pb-2 mb-3 uppercase">Event Telemetry Stream</h2>
+                                <div className="flex-grow overflow-y-auto font-mono text-[11px] space-y-1.5 pb-2 leading-relaxed">
                                     {!state?.timeline || state.timeline.length === 0 ? (
                                         <div className="text-slate-600 italic">No events logged in current session.</div>
                                     ) : (
@@ -330,6 +330,42 @@
                                         })
                                     )}
                                     <div ref={timelineEndRef} />
+                                </div>
+                            </div>
+                            
+                            {/* Band Communication Panel */}
+                            <div className="aether-panel p-4 flex-grow flex flex-col overflow-hidden h-1/2 border-fuchsia-900/50">
+                                <div className="flex justify-between items-center border-b border-fuchsia-900/50 pb-2 mb-3">
+                                    <h2 className="text-[10px] font-bold tracking-[0.2em] text-fuchsia-400 uppercase purple-glow">Band Communication</h2>
+                                    <div className="flex gap-4">
+                                        <span className="text-[10px] text-fuchsia-300/70 font-mono">ROOM: {state?.band_status?.active_room || 'N/A'}</span>
+                                        <span className="text-[10px] text-fuchsia-300/70 font-mono">PEERS: {(state?.band_status?.connected_agents || []).join(', ') || '0'}</span>
+                                    </div>
+                                </div>
+                                <div className="flex-grow overflow-y-auto font-mono text-[11px] space-y-2 pb-2">
+                                    {!state?.band_messages || state.band_messages.length === 0 ? (
+                                        <div className="text-slate-600 italic">No Band communications detected.</div>
+                                    ) : (
+                                        state.band_messages.map((msg, idx) => {
+                                            const time = new Date((msg?.timestamp || 0) * 1000).toLocaleTimeString([], {hour12:false});
+                                            const isPlanner = msg?.agent === 'planner';
+                                            const isSupervisor = msg?.agent === 'supervisor';
+                                            const color = isPlanner ? 'text-blue-400' : isSupervisor ? 'text-rose-400' : 'text-fuchsia-400';
+                                            const bg = isPlanner ? 'bg-blue-900/20 border-blue-900/30' : isSupervisor ? 'bg-rose-900/20 border-rose-900/30' : 'bg-fuchsia-900/20 border-fuchsia-900/30';
+                                            
+                                            return (
+                                                <div key={idx} className={`p-2 rounded border ${bg} transition-colors`}>
+                                                    <div className="flex justify-between mb-1 opacity-70">
+                                                        <span className={`uppercase font-bold tracking-wider text-[9px] ${color}`}>@{msg?.agent}</span>
+                                                        <span className="text-[9px] text-slate-500">[{time}]</span>
+                                                    </div>
+                                                    <div className={`text-[11px] ${color} opacity-90 break-words`}>
+                                                        {msg?.message}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })
+                                    )}
                                 </div>
                             </div>
                         </div>

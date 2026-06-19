@@ -38,6 +38,11 @@ class RuntimeState:
                     "key_index": "None",
                     "health": "Healthy"
                 },
+                "band_status": {
+                    "active_room": None,
+                    "connected_agents": []
+                },
+                "band_messages": [],
                 "files": [],
                 "timeline": []
             }
@@ -57,6 +62,8 @@ class RuntimeState:
                 # Clear previous mission data
                 self.state["files"] = []
                 self.state["timeline"] = []
+                self.state["band_messages"] = []
+                self.state["band_status"] = {"active_room": None, "connected_agents": []}
                 self.state["telemetry"] = {"artifacts_generated": 0, "llm_requests": 0, "repair_attempts": 0}
                 for a in self.state["agents"]:
                     self.state["agents"][a] = {"status": "Idle", "task": ""}
@@ -80,6 +87,14 @@ class RuntimeState:
                 self.state["status"] = "Failed"
             elif event_type == "llm_status":
                 self.state["llm_gateway"].update(data)
+            elif event_type == "band_status":
+                self.state["band_status"].update(data)
+            elif event_type == "band_message":
+                self.state["band_messages"].append({
+                    "timestamp": time.time(),
+                    "agent": data.get("agent", "SYSTEM"),
+                    "message": data.get("message", "")
+                })
             elif event_type == "log":
                 log_entry = {
                     "timestamp": time.time(),
