@@ -119,8 +119,10 @@ class Orchestrator:
             pass
             
         # 1. Planning phase
+        state_manager.push_event("agent_status", {"agent": "planner", "status": "Working", "task": "Brainstorming plan for goal"})
         planner = self.agents["planner"]
         plan_response = await planner.execute(goal_description)
+        state_manager.push_event("agent_status", {"agent": "planner", "status": "Idle", "task": ""})
         
         if self.cancel_requested:
             return {"status": "failed", "error": "Mission terminated by user."}

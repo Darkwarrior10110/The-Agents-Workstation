@@ -53,9 +53,9 @@ class BandService:
                 self.credentials["backend"] = backend_creds
                 self.credentials["supervisor"] = supervisor_creds
                 
-                self.clients["planner"] = AsyncRestClient(api_key=planner_creds["api_key"])
-                self.clients["backend"] = AsyncRestClient(api_key=backend_creds["api_key"])
-                self.clients["supervisor"] = AsyncRestClient(api_key=supervisor_creds["api_key"])
+                self.clients["planner"] = AsyncRestClient(api_key=planner_creds["api_key"], base_url="https://app.band.ai")
+                self.clients["backend"] = AsyncRestClient(api_key=backend_creds["api_key"], base_url="https://app.band.ai")
+                self.clients["supervisor"] = AsyncRestClient(api_key=supervisor_creds["api_key"], base_url="https://app.band.ai")
                 
                 self.is_active = True
                 system_logger.info("[BAND] Successfully loaded credentials and initialized SDK.")
@@ -93,10 +93,10 @@ class BandService:
             return
         
         try:
-            from band.client.rest import ChatRoomRequest
+            from band.client.rest import ChatRoomRequest, ParticipantRequest
             client = self.clients["planner"]
             response = await client.agent_api_chats.create_agent_chat(
-                chat=ChatRoomRequest(task_id=goal_id)
+                chat=ChatRoomRequest()
             )
             
             # SDK returns CreateAgentChatResponse with response.data.id
@@ -108,6 +108,16 @@ class BandService:
                 self.active_room = response.get('data', {}).get('id') or response.get('id')
             
             if self.active_room:
+                for role, creds in self.credentials.items():
+                    if role == "planner": continue
+                    try:
+                        await client.agent_api_participants.add_agent_chat_participant(
+                            chat_id=self.active_room,
+                            participant=ParticipantRequest(participant_id=creds["id"])
+                        )
+                    except Exception as e:
+                        system_logger.error(f"[BAND] Failed to add {role} to room: {str(e)}")
+
                 state_manager.push_event("band_status", {
                     "active_room": self.active_room,
                     "connected_agents": list(self.clients.keys())
