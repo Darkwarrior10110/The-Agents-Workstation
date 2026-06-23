@@ -58,7 +58,7 @@ class SharedMemory:
             
     def get_context(self) -> Dict[str, Any]:
         return {
-            "project_map": self.project_map.dict(),
+            "project_map": self.project_map.model_dump(),
             "generated_files": self.generated_files,
             "recent_repairs": self.repair_history[-5:], # Keep it lightweight
             "unstable_agents": self.unstable_agents,

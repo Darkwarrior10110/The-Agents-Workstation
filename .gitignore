@@ -1,27 +1,46 @@
 # Environments
 venv/
-env/
 .env
+*.env
 
-# Python Bytecode
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.whl
 
-# Ignore contents of these folders, but keep the folders themselves
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs & Runtime
 logs/crashes/*
 !logs/crashes/.gitkeep
-
 logs/runtime/*
 !logs/runtime/.gitkeep
 
+# Cache & Storage
 storage/cache/*
 !storage/cache/.gitkeep
-
 storage/logs/*
 !storage/logs/.gitkeep
 
+# Generated Projects
 projects/generated_projects/*
 !projects/generated_projects/.gitkeep
 
@@ -29,3 +48,8 @@ projects/generated_projects/*
 Planner.txt
 Backend.txt
 Supervisor.txt
+
+# Coverage
+htmlcov/
+.coverage
+coverage/

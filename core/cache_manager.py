@@ -37,7 +37,7 @@ class ArtifactCache:
         path = os.path.join(self.cache_dir, f"{key}.json")
         try:
             with open(path, "w") as f:
-                json.dump(artifact.dict(), f, default=str)
+                json.dump(artifact.model_dump(), f, default=str)
             system_logger.info(f"[CACHE] Saved artifact to cache: {key}")
         except Exception as e:
             system_logger.warning(f"[CACHE] Failed to write cache: {str(e)}")

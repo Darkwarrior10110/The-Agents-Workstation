@@ -465,6 +465,6 @@ class Orchestrator:
             project_state.stability_status = "stable"
             
         return {
-            "goal_state": goal_state.dict(),
-            "project_state": project_state.dict()
+            "goal_state": goal_state.model_dump(),
+            "project_state": project_state.model_dump()
         }
