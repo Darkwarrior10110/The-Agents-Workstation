@@ -7,12 +7,13 @@ from agents.terminal_agent import TerminalAgent
 from agents.supervisor_agent import SupervisorAgent
 from agents.debug_agent import DebugAgent
 from core.self_healing.runtime_repair_agent import RuntimeRepairAgent
-from core.schema import Task, TaskStatus, GoalState, ProjectState, Artifact, ArtifactType, FilePatch
+from core.schema import Task, TaskStatus, TaskPriority, GoalState, ProjectState, Artifact, ArtifactType, FilePatch, RepairTask
 from core.logger import system_logger
 from core.memory import SharedMemory
 from fastapi.encoders import jsonable_encoder
 import asyncio
 import os
+import uuid
 from datetime import datetime
 
 class Orchestrator:
@@ -119,10 +120,16 @@ class Orchestrator:
             pass
             
         # 1. Planning phase
-        state_manager.push_event("agent_status", {"agent": "planner", "status": "Working", "task": "Brainstorming plan for goal"})
+        try:
+            state_manager.push_event("agent_status", {"agent": "planner", "status": "Working", "task": "Brainstorming plan for goal"})
+        except NameError:
+            pass
         planner = self.agents["planner"]
         plan_response = await planner.execute(goal_description)
-        state_manager.push_event("agent_status", {"agent": "planner", "status": "Idle", "task": ""})
+        try:
+            state_manager.push_event("agent_status", {"agent": "planner", "status": "Idle", "task": ""})
+        except NameError:
+            pass
         
         if self.cancel_requested:
             return {"status": "failed", "error": "Mission terminated by user."}
@@ -147,8 +154,6 @@ class Orchestrator:
         # Pipeline Enforcement: Ensure Supervisor task exists
         has_supervisor = any(t.agent_type == "supervisor" for t in goal_state.tasks.values())
         if not has_supervisor:
-            import uuid
-            from core.schema import TaskPriority, Task
             sup_id = str(uuid.uuid4())
             goal_state.tasks[sup_id] = Task(
                 goal_id=goal_state.goal_id,
@@ -163,8 +168,6 @@ class Orchestrator:
         # Pipeline Enforcement: Ensure Terminal task exists
         has_terminal = any(t.agent_type == "terminal" for t in goal_state.tasks.values())
         if not has_terminal:
-            import uuid
-            from core.schema import TaskPriority, Task
             term_id = str(uuid.uuid4())
             goal_state.tasks[term_id] = Task(
                 goal_id=goal_state.goal_id,
@@ -358,7 +361,6 @@ class Orchestrator:
                     system_logger.info(f"[REPAIR] --- INITIATING REPAIR CYCLE {repair_cycle} ---")
                     project_state.repair_attempts = repair_cycle
                     
-                    from core.schema import RepairTask
                     for r_data in repair_tasks_data:
                         repair_task = RepairTask(**r_data)
                         agent = self.agents.get(repair_task.assigned_agent)
