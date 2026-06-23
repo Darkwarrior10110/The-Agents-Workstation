@@ -10,12 +10,17 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+      fail-fast: false
 
     steps:
     - name: Checkout repository
@@ -25,6 +30,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
+        cache: pip
 
     - name: Install dependencies
       run: |
@@ -32,19 +38,13 @@ jobs:
         pip install -r requirements.txt
 
     - name: Lint with ruff
-      run: |
-        pip install ruff
-        ruff check . --ignore=E402,F811,F401,E501
+      run: ruff check . --ignore=E402,F811,F401,E501
 
     - name: Type check with mypy
-      run: |
-        pip install mypy
-        mypy core/ agents/ --ignore-missing-imports || true
+      run: mypy core/ agents/ --ignore-missing-imports || true
 
     - name: Test with pytest
-      run: |
-        pip install pytest pytest-asyncio pytest-mock
-        python -m pytest tests/ -v --cov=core --cov=agents --cov-report=term-missing
+      run: python -m pytest tests/ -v --cov=core --cov=agents --cov-report=term-missing
 
   security:
     runs-on: ubuntu-latest
@@ -52,16 +52,24 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v4
 
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
+
+    - name: Install bandit
+      run: pip install bandit
+
     - name: Run Bandit security scan
-      run: |
-        pip install bandit
-        bandit -r . -ll -f json -o bandit-report.json || true
+      run: bandit -r core/ agents/ -ll -f json -o bandit-report.json || true
 
     - name: Upload security report
       uses: actions/upload-artifact@v4
       with:
         name: security-report
         path: bandit-report.json
+        retention-days: 30
 
   build:
     needs: [test]
@@ -69,6 +77,15 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+        cache: pip
+
+    - name: Install build
+      run: pip install build
 
     - name: Verify Dockerfile syntax
       run: |
@@ -79,6 +96,4 @@ jobs:
         fi
 
     - name: Build package
-      run: |
-        pip install build
-        python -m build --wheel || echo "Build not configured yet"
+      run: python -m build --wheel || echo "Build not configured yet"
