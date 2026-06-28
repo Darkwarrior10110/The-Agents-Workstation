@@ -1,0 +1,11 @@
+{
+  "name": "the-agents-workstation",
+  "version": "1.0.0",
+  "description": "Autonomous AI-powered software engineering workstation",
+  "private": true,
+  "scripts": {
+    "test": "pytest tests/ -v",
+    "lint": "ruff check .",
+    "typecheck": "mypy core/ agents/"
+  }
+}

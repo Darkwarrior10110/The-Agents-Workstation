@@ -231,7 +231,7 @@ class SupervisorAgent(BaseAgent):
                         "repair_instructions": r.message,
                         "artifact_path": target_path,
                         "input_data": {"path": target_path} if target_path else {},
-                        "strategy": strategy.dict()
+                        "strategy": strategy.model_dump()
                     })
                     
             for err_dict in execution_errors:
@@ -259,7 +259,7 @@ class SupervisorAgent(BaseAgent):
                     "repair_instructions": err_dict['error_message'],
                     "artifact_path": err_dict["target_path"],
                     "input_data": {"path": err_dict["target_path"]} if err_dict["target_path"] else {},
-                    "strategy": strategy.dict()
+                    "strategy": strategy.model_dump()
                 })
 
         # 4. Aggregate results into a SupervisorReport
@@ -300,7 +300,7 @@ class SupervisorAgent(BaseAgent):
             agent_name=self.name,
             status=TaskStatus.COMPLETED if overall_status == ValidationStatus.PASSED else TaskStatus.FAILED,
             output={
-                **report.dict(), 
+                **report.model_dump(), 
                 "repair_instructions": repair_instructions, 
                 "repair_tasks": repair_tasks_data,
                 "infra_alerts": infra_alerts
