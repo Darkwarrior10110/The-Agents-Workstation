@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  workstation:
+    build: .
+    container_name: agents-workstation
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./projects:/app/projects
+      - ./logs:/app/logs
+      - ./storage:/app/storage
+      - ./.env:/app/.env:ro
+    environment:
+      - AI_MODEL=${AI_MODEL:-gemini-2.0-flash}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

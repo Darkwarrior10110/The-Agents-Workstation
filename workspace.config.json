@@ -1,0 +1,11 @@
+{
+  "workspace": {
+    "name": "The-Agents-Workstation",
+    "version": "1.0.0",
+    "description": "Autonomous AI-powered software engineering workstation",
+    "agents": ["planner", "backend", "frontend", "terminal", "supervisor", "debug", "runtime_repair"],
+    "default_model": "gemini-2.0-flash",
+    "max_repair_attempts": 3,
+    "sandbox_timeout_seconds": 120
+  }
+}

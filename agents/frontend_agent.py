@@ -27,7 +27,7 @@ class FrontendAgent(BaseAgent):
                 return AgentResponse(
                     agent_name=self.name,
                     status=TaskStatus.COMPLETED,
-                    output={"artifacts": [cached_art.dict()]},
+                    output={"artifacts": [cached_art.model_dump()]},
                     logs=[f"Restored {cached_art.path} from cache."]
                 )
                 
@@ -98,7 +98,7 @@ class FrontendAgent(BaseAgent):
             return AgentResponse(
                 agent_name=self.name,
                 status=TaskStatus.COMPLETED,
-                output={"artifacts": [artifact.dict()]},
+                output={"artifacts": [artifact.model_dump()]},
                 logs=[f"Generated {target_path} using Gemini."]
             )
 

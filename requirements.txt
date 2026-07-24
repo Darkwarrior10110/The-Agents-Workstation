@@ -1,15 +1,27 @@
-fastapi
-uvicorn
-pydantic
-python-dotenv
-httpx
-aiofiles
-docker
-google-genai
-openai
-jinja2
-python-multipart
-websockets
-pytest
-pytest-asyncio
-band-sdk
+fastapi>=0.104.0
+uvicorn>=0.24.0
+pydantic>=2.5.0
+python-dotenv>=1.0.0
+httpx>=0.25.0
+aiofiles>=23.2.0
+docker>=6.1.0
+google-genai>=0.1.0
+openai>=1.6.0
+jinja2>=3.1.0
+python-multipart>=0.0.6
+websockets>=12.0
+band-sdk>=0.1.0
+
+# Testing
+pytest>=8.0.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# Code Quality
+ruff>=0.1.0
+mypy>=1.7.0
+bandit>=1.7.0
+
+# Build
+build>=1.0.0

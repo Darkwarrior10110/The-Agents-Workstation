@@ -86,7 +86,7 @@ class DebugAgent(BaseAgent):
             return AgentResponse(
                 agent_name=self.name,
                 status=TaskStatus.COMPLETED,
-                output={"artifacts": [artifact.dict()]},
+                output={"artifacts": [artifact.model_dump()]},
                 logs=[f"DebugAgent emitted patches for {target_path}."]
             )
 

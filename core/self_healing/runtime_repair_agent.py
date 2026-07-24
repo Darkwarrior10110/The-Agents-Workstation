@@ -121,7 +121,7 @@ class RuntimeRepairAgent(BaseAgent):
             return AgentResponse(
                 agent_name=self.name,
                 status=TaskStatus.COMPLETED,
-                output={"artifacts": [artifact.dict()], "repair_confidence": repair_confidence},
+                output={"artifacts": [artifact.model_dump()], "repair_confidence": repair_confidence},
                 logs=[f"RuntimeRepairAgent emitted patches for {target_path}."]
             )
 

@@ -162,12 +162,12 @@ class TerminalAgent(BaseAgent):
                 dump_dir = "logs/runtime" if exec_result.is_stable else "logs/crashes"
                 dump_file = os.path.join(dump_dir, f"exec_{task.id}.json")
                 with open(dump_file, "w") as f:
-                    json.dump(exec_result.dict(), f, indent=2)
+                    json.dump(exec_result.model_dump(), f, indent=2)
 
                 if not exec_result.is_stable:
-                    return AgentResponse(agent_name=self.name, status=TaskStatus.FAILED, output=exec_result.dict(), logs=[f"Runtime health check failed. Crash report saved to {dump_file}"])
+                    return AgentResponse(agent_name=self.name, status=TaskStatus.FAILED, output=exec_result.model_dump(), logs=[f"Runtime health check failed. Crash report saved to {dump_file}"])
 
-                output_dict = exec_result.dict()
+                output_dict = exec_result.model_dump()
                 output_dict["active_port"] = final_port
                 
                 return AgentResponse(
@@ -187,12 +187,12 @@ class TerminalAgent(BaseAgent):
                 dump_dir = "logs/runtime" if exec_result.is_stable else "logs/crashes"
                 dump_file = os.path.join(dump_dir, f"exec_{task.id}.json")
                 with open(dump_file, "w") as f:
-                    json.dump(exec_result.dict(), f, indent=2)
+                    json.dump(exec_result.model_dump(), f, indent=2)
 
                 return AgentResponse(
                     agent_name=self.name,
                     status=status,
-                    output=exec_result.dict(),
+                    output=exec_result.model_dump(),
                     logs=[f"Execution {'succeeded' if status == TaskStatus.COMPLETED else 'failed'} in {exec_result.duration}s. Report saved to {dump_file}"]
                 )
             
